@@ -1,1 +1,23 @@
-baseurl: 
+markdown: redcarpet
+permalink: /:categories/:title.html
+url: 
+lsi: false
+pygments: true
+safe: true
+auto: false 
+
+paginate: 8
+paginate_path: "page:num"
+
+# presonal config
+domain: github.ai7hoo.com
+title: Qun's Blog
+description: Javascript, CSS, HTML, Web Design, reading...
+author: Qun Ren
+email: renqunai7hoo#gmail.com
+github: ai7hoo
+
+config:
+  js_dir:
+  img_dir:
+  css_dir:
