@@ -1,7 +1,7 @@
 ---
-layout: "post"
+layout: post
 category: "reading"
 title: "text-page"
-tags: ["css"]
+tags: ["javascript"]
 ---
 test page
