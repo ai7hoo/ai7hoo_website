@@ -1,26 +1,16 @@
 ---
 layout: post
-category: "css"
-title: "css3盒模型回顾"
-tags: ["css"]
+category: "reading"
+title: "Javascript权威指南"
+tags: ["javascript"]
 ---
-css3的盒模型有段时间没看居然有些生疏了，一直用框架，也忘记了原理。盒模型是CSS3新增的属性，可以把盒模型以标准模式显示（content-box），或者以传统IE6以下（不含IE6）的模式显示（border-box）.
+最近在重读犀牛书，这算是个工具书了，很厚。
 
-#### 标准盒模型content
-现代浏览器的标准盒模型
-``` CSS
-	div {
-		box-sizing: content-box;
-	}
-```
+####一、前言部分
+主要是js概述部分，概括的讲述了本书的内容。
 
-#### 传统模式border
-传统IE6以下（不含IE6）的方式
-``` CSS
-	div {
-		box-sizing: border-box;
-	}
-```
+####二、Javascript语言核心
+本部分描述了js语言核心，这部分是该语言的主要参考资料。虚席之初通读一遍就OK，以后遇到js难点的时候，回到这里可以查看相关内容。
 
-示意图：
-![box-model-layout](images/box-model-layout.png)
+####三、客户端Javascript
+主要讲解js在浏览器中是如何实现的。这些章节介绍了大连道脚本数组对象。这些对象可以表示浏览器窗口/文档树和文档的内容等。这些章节同样涵盖重要的Web应用所需要的网络编程API/本地存储和检索数据/画图等。
