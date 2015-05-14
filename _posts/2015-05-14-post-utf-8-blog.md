@@ -1,5 +1,5 @@
 ---
-lay: post
+layout: post
 category: "other"
 title: "push 上传成功但是github pages不显示的问题"
 tags: ["编码"]
