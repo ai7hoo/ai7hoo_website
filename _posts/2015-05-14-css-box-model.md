@@ -23,3 +23,7 @@ css3的盒模型有段时间没看居然有些生疏了，一直用框架，也�
 		box-sizing: border-box;
 	}
 ```
+
+图片示例
+
+![box-model-layout](/box-model-layout.png "box-model-layout")
