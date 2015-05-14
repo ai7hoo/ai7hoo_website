@@ -8,6 +8,7 @@ css3的盒模型有段时间没看居然有些生疏了，一直用框架，也�
 
 #### 标准盒模型content
 现代浏览器的标准盒模型
+
 ``` CSS
 	div {
 		box-sizing: content-box;
@@ -16,6 +17,7 @@ css3的盒模型有段时间没看居然有些生疏了，一直用框架，也�
 
 #### 传统模式border
 传统IE6以下（不含IE6）的方式
+
 ``` CSS
 	div {
 		box-sizing: border-box;
