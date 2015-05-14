@@ -21,6 +21,3 @@ css3的盒模型有段时间没看居然有些生疏了，一直用框架，也忘记了原理。盒模型是CSS3新
 		box-sizing: border-box;
 	}
 ```
-
-示意图：
-![box-model-layout](http://github.ai7hoo.com/images/box-model-layout.png)
