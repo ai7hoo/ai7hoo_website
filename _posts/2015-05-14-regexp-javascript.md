@@ -6,12 +6,12 @@ tags: ["javascript"]
 ---
 正则表达式看起来跟乱码似得，现在又理了一下
 
-#### 在js中正则的应用
+####在js中正则的应用
 1.内容替换
 2.表单验证
 3.搜索匹配
 
-#### 新建正则表达式
+####新建正则表达式
 
 ```javascript
 	//第一种方式
@@ -19,14 +19,14 @@ tags: ["javascript"]
 	var pattern = /box/igm;
 ```
 
-#### 方法
+####方法
 
 ```javascript
 	pattern.test(str);	//检测str字符串是否匹配pattern,返回布尔值
 	pattern.exec(str);	//通过检测str字符串里面是否匹配pattern,返回一组数组,没有匹配则返回null
 ```
 
-#### 可使用正则匹配的字符串属性
+####可使用正则匹配的字符串属性
 
 ```javascript
 	str.match(pattern);	//返回数组,可以通过pattern.length获取数量
