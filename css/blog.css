@@ -15,6 +15,9 @@ footer {
 .post-date{
 	float:right;
 	padding:5px;
-	font-size:12px
+	font-size:12px;
 }
-
+.container .row h2 a:hover {
+ 	text-decoration: none;
+ 	color: #000;
+}
