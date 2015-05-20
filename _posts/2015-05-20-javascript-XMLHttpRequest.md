@@ -1,12 +1,12 @@
 ---
 layout: post
 category: "javascript"
-title: "原生javascript中的XMLHttpRequest的使用(AJAX)"
+title: "原生javascript中的XMLHttpRequest的使用"
 tags: ["javascript","ajax"]
 ---
 之前一直是使用jQuery中的ajax,不需要考虑各种兼容性,用起来也非常简单,其实原生的也不复杂,原理都一样嘛.希望能通过jQuery比较容易的平滑过渡到javascript.
-
-
+  
+  
 ####根据浏览器类型获取XHR
 - window.XMLHttpRequest
 - window.ActiveXObject
@@ -20,8 +20,8 @@ tags: ["javascript","ajax"]
 		xmlhttp = new ActiveXObject("Microsoft.XMLhttp");	//IE6以下的浏览器获取方式
 	}
 ```
-
-
+  
+  
 ####获取XHR之后开始链接
 - xmlhttp.open();
 - xmlhttp.send();
@@ -49,5 +49,6 @@ tags: ["javascript","ajax"]
 		}
 	}
 ```
-
+  
+  
 以后还是能用原生javascript尽量用原生,效率高,提高学习能力.
