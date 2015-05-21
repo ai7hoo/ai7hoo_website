@@ -10,8 +10,12 @@ tags: ["javascript"]
 当前显示窗口就是指的浏览器中显示网页内容的尺寸,不包含工具条,状态栏,书签栏,滚动条等.这个我用的比较多的一个.比如之前没有media的时候用来js来获取浏览器尺寸以便使用响应式.
 
 ```javascript
-	var hl = document.documentElement.clientHeight();
-	var wl = document.documentElement.clientWidth();
+	var hl = document.documentElement.clientHeight;
+	var wl = document.documentElement.clientWidth;
+	//2015年5月21日更新
+	//对于 Internet Explorer 8、7、6、5：使用document.documentElement.clientHeight,对于IE9+、Chrome、Firefox、Opera 以及 Safari：使用window.innerHeright;，所以对于不同浏览器可以使用以下判断.
+	var hl = document.documentElement.clientHeight || window.innerHeright;
+	var h2 = document.documentElement.clientWidth || window.innerWidth;
 ```
 
 #### 获取屏幕分辨率的尺寸
