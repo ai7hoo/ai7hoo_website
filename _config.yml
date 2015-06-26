@@ -11,9 +11,9 @@ paginate_path: "page:num"
 
 # presonal config
 domain: github.ai7hoo.com
-title: Qun's Blog
+title: Quinn's Blog
 description: Javascript, CSS, HTML, Web Design, Reading...
-author: Qun Ren
+author: Quinn Ren
 email: renqunai7hoo#gmail.com
 github: ai7hoo
 
