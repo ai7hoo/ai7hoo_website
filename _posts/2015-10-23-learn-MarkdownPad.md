@@ -34,3 +34,45 @@ Fonts, color schemes, layouts and stylesheets are all 100% customizable so you c
 MarkdownPad supports multiple Markdown processing engines, including standard Markdown, Markdown Extra (with Table support) and GitHub Flavored Markdown.
 
 With a tabbed document interface, PDF export, a built-in image uploader, session management, spell check, auto-save, syntax highlighting and a built-in CSS management interface, there's no limit to what you can do with MarkdownPad.
+
+### Javascript code
+
+``` javascript
+window.onload = function(){
+	var getInfo = new Vue({
+		el:'#userInfo',
+		data:{
+			items:[]
+		},
+		methods:{
+			onCclick:function(id){
+				//do something...
+			}
+		}
+	});
+
+	$.ajax({
+		url:SERVER_IP+'/front/get_user_info',
+		type:'get',
+		dataType:'json',
+		beforeSend:function(){},
+		success:function(result){
+			getInfo.items = result.data;
+		},
+		error:function(){}
+	});
+};
+```
+
+### HTML code
+
+```html
+<script src="/js/jquery.js"></script>
+<script src="/js/vue.min.js"></script>
+...
+<div class="user">
+	<template id="userInfo" v-repeat="item in items">
+		<div class="{{item.isVip?'isVip':''}}" v-text="item.name" data-userId="{{item.userId}}" v-on="click:onClick(item.userId)" ></div>
+	</template>
+</div>
+```
