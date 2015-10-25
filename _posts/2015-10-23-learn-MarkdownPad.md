@@ -1,78 +1,172 @@
 ---
 layout: post
-category: "other"
-title: "learn-MarkdownPad"
-tags: ["Markdown"]
+category: "javascript"
+title: "理解JavaScript的闭包"
+tags: ["javascript","闭包"]
 ---
 
-## Welcome to MarkdownPad 2 ##
+原文：[http://www.cnblogs.com/eyeear/p/4601884.html](http://www.cnblogs.com/eyeear/p/4601884.html)
 
-**MarkdownPad** is a full-featured Markdown editor for Windows.
+周末被安排来加班，忙里偷闲...
 
-### Built exclusively for Markdown ###
+-------------------------------------
 
-Enjoy first-class Markdown support with easy access to  Markdown syntax and convenient keyboard shortcuts.
-
-Give them a try:
-
-- **Bold** (`Ctrl+B`) and *Italic* (`Ctrl+I`)
-- Quotes (`Ctrl+Q`)
-- Code blocks (`Ctrl+K`)
-- Headings 1, 2, 3 (`Ctrl+1`, `Ctrl+2`, `Ctrl+3`)
-- Lists (`Ctrl+U` and `Ctrl+Shift+O`)
-
-### See your changes instantly with LivePreview ###
-
-Don't guess if your [hyperlink syntax](http://markdownpad.com) is correct; LivePreview will show you exactly what your document looks like every time you press a key.
-
-### Make it your own ###
-
-Fonts, color schemes, layouts and stylesheets are all 100% customizable so you can turn MarkdownPad into your perfect editor.
-
-### A robust editor for advanced Markdown users ###
-
-MarkdownPad supports multiple Markdown processing engines, including standard Markdown, Markdown Extra (with Table support) and GitHub Flavored Markdown.
-
-With a tabbed document interface, PDF export, a built-in image uploader, session management, spell check, auto-save, syntax highlighting and a built-in CSS management interface, there's no limit to what you can do with MarkdownPad.
-
-### Javascript code
-
-``` javascript
-window.onload = function(){
-	var getInfo = new Vue({
-		el:'#userInfo',
-		data:{
-			items:[]
-		},
-		methods:{
-			onCclick:function(id){
-				//do something...
-			}
-		}
-	});
-
-	$.ajax({
-		url:SERVER_IP+'/front/get_user_info',
-		type:'get',
-		dataType:'json',
-		beforeSend:function(){},
-		success:function(result){
-			getInfo.items = result.data;
-		},
-		error:function(){}
-	});
-};
-```
-
-### HTML code
-
+  在JS这块，免不了被问什么是闭包。
+  从一个常见的 循环 问题说起。
+  有一个ul列表, 里面有5个li标签，我希望点击每个li标签的时候，弹出每个li标签对应的索引值（第一个弹出0，第二个弹出1...）。
 ```html
-<script src="/js/jquery.js"></script>
-<script src="/js/vue.min.js"></script>
-...
-<div class="user">
-	<template id="userInfo" v-repeat="item in items">
-		<div class="{{item.isVip?'isVip':''}}" v-text="item.name" data-userId="{{item.userId}}" v-on="click:onClick(item.userId)" ></div>
-	</template>
-</div>
+<ul id="result">
+<li>1</li>
+<li>2</li>
+<li>3</li>
+<li>4</li>
+<li>5</li>
+</ul>
 ```
+
+当我很认真的写出一段代码：
+
+```javascript
+var lis = document.getElementsByTagName('li'),n=lis.length,i=0;
+for(i;i<n;i++){
+	lis[i].onclick = function(){
+		alert(i);
+	}
+}
+```
+
+蛮高兴的做了点击测试，从第一个li标签开始，弹出"5",第二个、第三个...全部都弹出“5”。什么情况，这不是我想要的结果。出现了问题，就去找问题的原因，当我点击每个li标签的时候，都弹出“5”，说明for循环已经运行完了，变量 i  也跟着循环条件增加到了5，在我点击前，循环已经执行完成。
+
+经过一番思考，重新写了这段代码：
+
+```javascript
+var lis = document.getElementsByTagName('li'),n=lis.length,i=0;
+for(i;i<n;i++){
+	lis[i].index = i;
+	lis[i].onclick = function(){
+		alert(this.index);
+	}
+}
+```
+
+把每次循环时变量 i 的值赋值给每个li标签对象的一个属性。很神奇的这段代码做到了我要的结果，点击每个li标签弹出了对应的索引值（第一个弹出0，第二个弹出1...）。这让我想到是因为变量 i 没有被正确的引用，才发生那都弹出5的问题。懵懵懂懂的想到要正确的引用 变量 i 。经过多次写写改改，点击测试，写出了下面这样的代码：
+
+```javascript
+//
+var lis = document.getElementsByTagName('li'),n=lis.length,i=0;
+for(i;i<n;i++){
+	(function(num){
+		lis[num].onclick = function(){
+			alert(num);
+		}
+	}(i));
+}
+//或者
+var lis = document.getElementsByTagName('li'),n=lis.length,i=0;
+for(i;i<n;i++){
+	lis[i].onclick = function(num){
+		return function(){
+			alert(num);
+		}
+	}(i);
+}
+```
+
+后来半知半解的明白了这是闭包的一种运用， 闭包与 **变量的作用域 、 变量的生存周期** 有密切的关系 。要理解闭包就要理解变量的作用域、变量的生存周期。好吧，得先了解与变量有关的知识了。
+
+#### 变量的作用域
+
+当在一个函数中声明一个变量的时候，如果我们没有加上关键字 **var** , 这个变量就是 **全局变量** ，加上了关键字var，这个变量就是 **局部变量** ，只有在这个函数内部才能访问这个局部变量，在函数外是访问不到的。 函数的参数也是局部变量，只能在函数内部访问。
+
+```javascript
+function a(){
+	b = 1;
+	var c = 2;
+}
+a();
+alert(b);//1
+alert(c);//出错 c 未定义
+```
+
+定义了一个函数a，里面有个全局变量b，局部变量c。当在函数a外部访问变量b、c，正常弹出了b的值，而变量c是局部变量，没有正常访问，所以出错，提示变量c未定义。
+
+在函数内部，局部变量优先级高于同名的全局变量 。 **当定义一个函数的时候，也会随之创建一个函数作用域** 。当在函数内部访问一个变量的时候，会在函数内部作用域搜索这个变量，如果函数内部没有这个变量，会在函数外部搜索，直到找到这个名称的变量为止。如果找不到，就会抛出一个错误。
+
+```javascript
+var v = 1;
+function a(){
+	var m = 2;
+	function b(){
+		var n = 3;
+		alert(m);// 2
+		alert(v);// 1
+	}
+	b();
+	alert(n);//出错
+}
+a();
+```
+
+![window闭包演示](/images/iyY3qu.jpg "window闭包演示")
+
+上面的代码第一次弹出变量m，首先在函数b里查找，但没有找到，继续往外找，在函数a里面找，m的值为2；第二次弹出变量v，同样的函数b里找，没有找到，再在函数a里找，也没有找到，在往外找，找到了v的值为1；第三次弹出变量n，在函数a里面找，没有找到，不能在函数b里面找，因为查找是向上、向外的，不能向下、向内，最后在函数a的外面找，也没有找到，这时就抛出错误，变量n没有定义。
+
+上面的代码有三个作用域，函数b的作用域，函数a的作用域，window全局作用域(最顶层的作用域)，这些作用域联合起来，就形成了作用域链。访问变量就是在这个作用域链的一个搜索过程。
+
+#### 变量的生存周期
+
+在javascript中，全局变量拥有很长的生存周期，直到把变量销毁，而局部变量会随着函数调用结束被销毁。
+
+```javascript
+function a(){
+	v = 1;//全局变量
+	alert(v);//1
+}
+a();
+alert(v);//1 全局变量
+
+function b(){
+	var i = 2;
+	alert(i);
+}
+b();
+alert(i);//出错 i未定义 局部变量已经被销毁
+```
+
+上面的代码定义了两个函数，函数a内部定义全局变量v，函数a执行完后全局变量v还存在；函数b内部定义了局部变量i，函数b执行完后局部变量i被销毁。
+
+```javascript
+function c(){
+	var k = 3;//局部变量
+	return function(){
+		k++;
+		alert(k);
+	};
+}
+var f = c();
+f();//4
+f();//4
+f();//4
+```
+
+上面的代码定义了一个函数c，函数c内部定义了局部变量k，当函数c执行后返回了一个匿名函数，匿名函数访问了局部变量k，变量f的值为这个匿名函数，调用f实际上是调用这个匿名函数。每次调用f()，变量k的值都会增加1。在这里局部变量k没有在函数c执行完后被销毁，反而“活”了下来，它的生存周期延长了。
+
+#### 什么是闭包
+
+当前作用域总是能够访问外部作用域中的变量, [函数](http://bonsaiden.github.io/JavaScript-Garden/zh/#function.scopes) 是 JavaScript 中唯一拥有自身作用域的结构, 因此闭包的创建依赖于函数。
+
+1. 一个函数可以引用外部函数的变量，这个函数就可算是一个闭包。
+2. 外部函数已经执行完，内部的函数仍可以引用外部函数的变量。这个内部函数就可算是一个闭包。
+3. 函数能存储其作用域的变量、能读写当前函数作用域内变量的函数可算是一个闭包。
+
+-----------------
+
+阅读：
+
+《JavaScript权威指南》： 函数的执行依赖于变量作用域，这个作用域是在函数定义时决定的。为了实现这种作用域，函数对象的内部状态不仅包含函数代码逻辑，还必须引用当前的作用域链。函数对象可以通过作用域链相互关联起来，函数体内部的变量都可以保存在函数作用域内，这种特性被称为闭包。 这说得云里雾里的，让人不是很懂，这得先了解作用域、作用域链。
+
+《JavaScript高级程序设计》：闭包是指有权访问另一个函数作用域中的变量的函数。创建闭包的常用方式，就是在一个函数内部创建另一个函数。这个还好，至少让人知道一种是闭包的情况。
+
+《你不知道的JavaScript（上卷）》
+
+《Effective JavaScript: 编写高质量JavaScript代码的68个有效方法》
