@@ -13,11 +13,13 @@ tags: ["javascript","vue"]
 #### 安装
 
 NPM 安装：
+
 ```` cmd
 npm install vue
 ````
 
 Bower 安装
+
 ```` cmd
 bower install vue
 ````
@@ -28,6 +30,7 @@ bower install vue
 #### Hello world
 
 HTML
+
 ```` HTML
 <div id="app">
 	{{message}}
@@ -35,6 +38,7 @@ HTML
 ````
 
 javascript
+
 ```` javascript
 new Vue({
 	data:{
