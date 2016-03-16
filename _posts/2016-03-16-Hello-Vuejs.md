@@ -32,9 +32,7 @@ bower install vue
 HTML
 
 ```` HTML
-<div id="app">
-	{{message}}
-</div>
+<div id="app" v-text="message"></div>
 ````
 
 javascript
