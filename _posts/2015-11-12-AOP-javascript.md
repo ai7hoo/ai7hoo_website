@@ -10,6 +10,7 @@ tags: ["javascript","AOP"]
 -------------------------------------
 
 比如需要统计所有的函数 function 的执行时间的时候：
+
 ```javascript
 function test(){
 	//alert(2);
