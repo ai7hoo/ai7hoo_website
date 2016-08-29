@@ -5,8 +5,6 @@ title: "webpack 打包入门"
 tags: ["javascript","webpack","nodejs","打包"]
 ---
 
-转自 [segmentfault](https://segmentfault.com/a/1190000006649986)
-
 一项技术、一个工具的出现，肯定是为了解决问题的。那么，webpack 是为了解决什么问题？答案是：**文件依赖管理**。浏览器端的 Js, 出于安全的考虑，对本地文件没有操作权限，不能引用其它 js, css 等文件。而 webpack 就是用来解决这个问题的，让你的项目可以很好地分文件、分模块，而且它对外部文件的引入同时支持 cmd, amd 和 commondJs 这三种形式，够有诚意。
 
 或许你要说了，解决文件依赖，早在 require.js 和 sea.js 的时候，都已经解决了呀！那么，webpack 在这方面，有哪些新的突破：
@@ -203,25 +201,25 @@ module.exports = {
 
 a. 自动编译
 
-如果你只是想支持自动编译，那么很简单。只要运行 $ webpack -w 就可以开启它的自动编译功能。
+如果你只是想支持自动编译，那么很简单。只要运行 `$ webpack -w` 就可以开启它的自动编译功能。
 
-b. 用 webpack-dev-server 实现：自动编译 + 浏览器同步刷新
+b. 用 `webpack-dev-server` 实现：自动编译 + 浏览器同步刷新
 
 - 首先，你需要安装 webpack-dev-server 这个包。
 	$ npm i webpack-dev-server -D
-- 然后，我简单介绍下它：webpack-dev-server 文档
+- 然后，我简单介绍下它：`webpack-dev-server` 文档
 - 
-运行时，它会启动一个本地 Node 服务器，默认端口8080. 即：localhost:8080. 并且自动识别当前目录下的 webpack.config.js 文件，来作为 webpack 配置文件。
+运行时，它会启动一个本地 Node 服务器，默认端口8080. 即：`localhost:8080`. 并且自动识别当前目录下的 `webpack.config.js` 文件，来作为 `webpack` 配置文件。
 
-产出的编译后文件，不在 output.path 里，而在它自己定义的内存。
+产出的编译后文件，不在 `output.path` 里，而在它自己定义的内存。
 
-行内参数说明：inline: 使用命令行模式。content-base: 指定网站的根地址，如果你想指定为项目根目录，那么 --content-base ./。hot: 开启热替换。一般用在 React 和 Vue 当中，我们这里不用。
+行内参数说明：`inline`: 使用命令行模式。`content-base`: 指定网站的根地址，如果你想指定为项目根目录，那么 `--content-base ./`。`hot`: 开启热替换。一般用在 `React` 和 `Vue` 当中，我们这里不用。
 
 好了，那么，启动它吧：
 
 	$ webpack-dev-server --inline --content-base ./
 
-然后，你在浏览器中，访问 http://localhost:8080/views_dev/index.html 就会发现，你修改代码的时候，实时编译，并且浏览器同步刷新了。（不过，要补充一下，触发 webpack 重新编译时，才能同步刷新浏览器。意味着，你修改 views_dev/*.html 的 HTML 文件时，浏览器，不会被刷新，因为它不会触发 webpack 重新编译。）
+然后，你在浏览器中，访问 `http://localhost:8080/views_dev/index.html` 就会发现，你修改代码的时候，实时编译，并且浏览器同步刷新了。（不过，要补充一下，触发 webpack 重新编译时，才能同步刷新浏览器。意味着，你修改 `views_dev/*.html` 的 HTML 文件时，浏览器，不会被刷新，因为它不会触发 webpack 重新编译。）
 
 # 多页面打包
 
@@ -244,7 +242,7 @@ module.exports = {
 };
 ````
 
-现在，我们需要改下 entry 的配置，如下：
+现在，我们需要改下 `entry` 的配置，如下：
 
 ```` javascript
 entry: {
@@ -257,10 +255,10 @@ entry: {
 }
 ````
 
-上面的配置意思是，会独立打包3个实体。分别是 index, list, common. 知识点如下：
+上面的配置意思是，会独立打包3个实体。分别是 `index`, `list`, `common`. 知识点如下：
 
 1. 它支持多个文件打包在一起，如这里的 common 的配置。我们一般，用来放公共基础包。
-2. 我们看到 output.filename = [name].js，这里的 [name] 取自于 entry 的 key 值。意味着，他们最终打包的输出是：
+2. 我们看到 `output.filename = [name].js`，这里的 `[name]` 取自于 `entry` 的 `key` 值。意味着，他们最终打包的输出是：
 
 	webpack_demo
 	|--asset
@@ -278,11 +276,11 @@ entry: {
 3. 加上 md5
 4. html 和 css 中，引用的静态资源需要替换。
 
-哈哈，或许你还能想到很多。我就上面4步来说下实现方式。开始之前，我们一般会这么做：新建一个 webpack 的配置文件，用来做上线发布的配置。比如，我们同样放在根目录下，命名 webpack.config.build.js. 此时，你可以这样做：
+哈哈，或许你还能想到很多。我就上面4步来说下实现方式。开始之前，我们一般会这么做：新建一个 `webpack` 的配置文件，用来做上线发布的配置。比如，我们同样放在根目录下，命名 `webpack.config.build.js`. 此时，你可以这样做：
 
 	$ webpack -p --config webpack.config.build.js
 
-这里的 -p 是 production 模式的意思，它会对 css, js 文件进行压缩。后面 --config 就是指定此次运行的配置文件。
+这里的 `-p` 是 `production` 模式的意思，它会对 `css`, `js` 文件进行压缩。后面 `--config` 就是指定此次运行的配置文件。
 
 然后，我们来解决上面的4个要求：
 
@@ -300,11 +298,12 @@ module.exports = {
 };
 ````
 
-- 压缩。用 webpack -p 解决了。
-- 替换 HTML 中静态资源的路径。可以用 webpack 的插件，html-webpack-plugin 来做。或者，你对 gulp 还是比较熟悉的话，用 gulp-prefix 来实现。这里就不详细写配置了。
+- 压缩。用 `webpack -p` 解决了。
+- 替换 HTML 中静态资源的路径。可以用 `webpack` 的插件，`html-webpack-plugin` 来做。或者，你对 `gulp` 还是比较熟悉的话，用 `gulp-prefix` 来实现。这里就不详细写配置了。
 
 
 然后，结束！
 
+转自 [segmentfault](https://segmentfault.com/a/1190000006649986)
 
 
