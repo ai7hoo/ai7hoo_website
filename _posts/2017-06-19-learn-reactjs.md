@@ -5,8 +5,6 @@ title: "React.js 入门学习笔记"
 tags: ["Reactjs"]
 ---
 
-# React.js 学习笔记
-
 ### React.js 知识点总结：
 之前已大量使用过 Vue.js 所以对于学习 React.js 有所帮助，看起来还是 Vue.js 好学一些。
 测试在浏览器环境使用，文件引入：
