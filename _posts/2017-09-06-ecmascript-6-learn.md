@@ -198,7 +198,7 @@ var a2 = [for (i of a1) i * 3]
 ### Array.observe() / Array.unobserve()
 用于监听/取消监听数组的编号，属于ES7的一部分
 
-## 对象的扩展
+## 7. 对象的扩展
 ### 属性的简介表示法
 可以直接写入变量和函数，作为对象的属性和方法，更加简洁
 
@@ -336,7 +336,7 @@ proxy 支持的拦截器
 ### Object.observe() / Object.unobserve()
 用于监控对象的变化。属于ES7的内容
 
-## 函数的扩展
+## 8. 函数的扩展
 ### 函数参数的默认值
 ES6之前不能为函数指定默认值，只能在函数内部通过判断参数是否为 undefined 来指定
 
@@ -396,7 +396,7 @@ var y = function (v){
 - 不可以当作构造函数，也就是说，不可以使用 new 命令，否则会报错
 - 不可以使用 arguments 对象，该对象在函数提内部不存在
 
-## Set 和 Map 数据结构
+## 9. Set 和 Map 数据结构
 ### Set()
 ES6提供的新的数据结构 ，类似数组，但是成员唯一，没有重复
 属性和方法
@@ -417,3 +417,213 @@ ES6提供的新的数据结构 ，类似数组，但是成员唯一，没有重�
 javascript 对象的键值中的键只能是使用字符串，这里使用 Map 能让对象当键名
 ### WeakMap
 类似Map,但是只能让对象当作键名。
+
+## Iterator 和 for...of
+### Iterator
+遍历器（Iterator）
+
+``` javascript
+
+function idMaker(array) {
+  var index = 0
+  return {
+    next: function() {
+      // return {value: index++, done: false}
+      return index < array.length ? {value: index++, done: false} : {value: undefined, done: true}
+    }
+  }
+}
+
+var it = idMaker([1,2])
+console.log(it.next().value) 、、
+console.log(it.next().value)
+console.log(it.next().value)
+```
+### for...of
+
+## Generator 函数
+所谓Generator,有多种理解方式，。首先，可以把它理解成一个函数的内部状态的遍历器，每调用一次，函数的内部状态发生一次改变（可以理解成发生某些事件），ES6引入Generator函数，左右就是可以完全控制函数的内部状态的变化，依次遍历这些状态。
+在形式上，Generator是一个普通函数，但是有两个特征：
+1. function 命令与函数名之间有一个星号 * 
+2. 函数体内使用 yield 语句，定义遍历器的每个成员，即不同的内部状态（yield语句在英语里的意思就是产出）
+
+## Promise 对象
+### 基本用法
+ES6原生提供了Promise对象，所谓 Promise 对象，就是代表了未来某个将要发生的事件（通常是一个异步操作）。它的好处在于，有了promise对象，就可以将异步操作以同步操作的流程表达出来，避免了层层嵌套的回调函数。此外，Promise对象还提供了一整套完整的接口，使得可以更加容易的控制异步操作。
+ES6的Promise对象是一个构造函数，，用来生成Promise实例。
+
+``` javascript
+function test() {
+  return new Promise((resolve, reject) => {
+    var num = Math.random()
+    if (num > 0.5) {
+      resolve(num + '大于0.5')
+    } else {
+      reject(num + '小于0.5')
+    }
+  })
+}
+test().then((res) => {
+  console.log(res)
+}).catch((error) => {
+  console.log(error)
+})
+```
+
+### Promise.prototype.then 链式操作
+### Promise.prototype.catch 捕获错误
+### Promise.all 方法
+该方法用于将多个promise实例，包装成一个新的promise实例，可用于多个异步操作同时满足某个条件后进行操作。
+只有p1,p2的状态都变成了 fulfilled，p的状态才会fulfilled,然后执行then里的方法
+当p1,p2中有一个被rejected，p的状态就变成了，rejected，然后执行catch里的方法
+
+``` javascript
+function test(id) {
+  var ppp =  new Promise((resolve, reject) => {
+    setTimeout(() => {
+      console.log(id)
+      if (id > 0) {
+        resolve()
+      } else {
+        reject()
+      }
+    }, 2000)
+  })
+  return ppp
+}
+var promiseAll = [1,2].map((id) => {
+  return test(id)
+})
+Promise.all(promiseAll).then(() => {
+  console.log('ok')
+}).catch(() => {
+  console.log('no')
+})
+```
+
+### Promise.race 方法
+同 Promise.all 类似，但是只要p1,p2有一个实例先改变了状态，p的状态就跟着改变，那个率先改变的实例，就是返回值
+### Promise.resolve方法 Promise.reject方法
+### async 函数
+async 函数是用来取代回调函数的另一种方法。
+只要函数名之前加上async关键字，就表明该函数内部有异步操作。该异步操作应该返回一个promise对象。前面用await关键字注明。当函数执行的时候，一旦遇到await就会先返回，等到触发的异步操作完成，再接着执行函数提内后面的语句
+async 函数并不属于ES6,而是被列入ES7内。但是部分浏览器已实现了该功能。
+
+``` javascript
+async function asyncValue() {
+  var a = 0
+  await new Promise((resolve) => {
+    setTimeout(() => {
+      a++
+      resolve()
+    }, 3000)
+  })
+  return a;
+}
+
+asyncValue().then((res) => {
+  console.log(res)
+}).catch((error) => {
+  console.log(error)
+})
+```
+
+## Class 和 Module
+### Class
+ES5通过构造函数，定义并生成新对象。
+
+``` javascript
+function Point(x, y) {
+  this.x = x
+  this.y = y
+}
+Point.prototype.toString = function() {
+  return '(' + this.x + ', ' + this.y + ')'
+}
+Point.prototype.mj = function() {
+  return this.x * this.y
+}
+Point.prototype.bc = function() {
+  return (this.x + this.y ) * 2
+}
+
+var p = new Point(4,6)
+console.log(p.mj())
+console.log(p.bc())
+```
+ES6引入了Class这个概念，作为对象的模版，通过class关键字，可以定义类，上面的代码用‘类’改写，就是下面这样：
+
+``` javascript
+class Point {
+  constructor (x, y) {
+    this.x = x
+    this.y = y
+  }
+  toString () {
+    return '(' + this.x + ', ' + this.y + ')'
+  }
+}
+var po = new Point(2,4)
+po.toString() // (2, 4)
+```
+class 之间可以使用 extends 关键字，实现继承。
+
+``` javascript
+class ColorPoint extends Point {}
+```
+上面代码定义了一个ColorPoint类，该类通过关键字 extends ，继承了Point类所有的属性和方法。但是由于没有部署任何代码，所以这两个类完全一样，等于复制了一个Point类。下面，我们在ColorPoint内部加上代码。
+
+``` javascript
+class ColorPoint extends Point {
+  constructor (x, y, color) {
+    super(x, y)
+    this.color = color
+  }
+  toString () {
+    return this.color + ' ' + super()
+  }
+}
+```
+
+上面代码中，constructor方法和toString方法中，都出现了super关键字，它代指弗雷的同名方法，在constructor方法内，super指代父类的constructor方法；在toString方法内，super指代父类的toString方法。
+有一个地方需要注意，类和模块的内部，默认就是严格模式，所以不需要使用use strict 置顶运行模式，考虑到未来所有的代码，其实都是运行在模块之中的，所以ES6实际上把整个语言升级到了严格模式。
+
+### Module 的基本用法
+javascript没有模块(module)体系，无法讲一个大城县拆分成互相依赖的小文件，再用简单的方法拼装起来，其他语言都有这项功能，比如ruby的require，python的import 甚至css都有 @import,但是javascript任何这方面的支持都没有，这对开发大型的、复杂的项目形成了巨大障碍。
+在ES6之前，社区制订了一些模块加载的方案，最主要的有commonJs和AMD两种，前者用于服务器，后者用于浏览器，成为浏览器和服务器通用的模块解决方法。
+ES6模块的设计思想，是尽量的静态化，使得编译时就能确定模块的依赖关系，以及输入和输出的变量，CommonJS和AMD模块，都只能在运行时确定这些东西，比如，CommonJSmok 模块就是对象，输入时必须查找对象属性。
+
+``` javascript
+var {stat, existx, readFile} = require('fs')
+```
+ES6模块不是对象，而是通过 export命令显式置顶输出的代码，输入时也采用静态命令的形式
+``` javascript
+import (stat, exists, readFile) from 'fs'
+```
+#### export 命令，import 命令
+模块功能主要由两个命令构成：export和import。export命令用于用户自定义模块，规定对外接口；import命令用于输入其他模块提供的功能。同事创造命名空间（namespace），防止函数名冲突。
+ES6允许将独立的JS文件作为模块，也就是说，允许一个javascript脚本文件调用另一个脚本文件，该文件内部的所有变量，外部无法获取，必须使用export关键字输入变量。下面是一个JS文件，里面使用export关键字输出变量。
+
+``` javascript
+// config.js
+const host = 'qq.com'
+const ip = '1.1.1.1'
+const getInfo = function(){
+  return 'something'
+}
+module.export = {
+  host,
+  ip,
+  getInfo
+}
+
+// app.js
+const { host, getInfo } = require('./config')
+console.log(host)  // qq.com
+console.log(getInfo())  // something
+```
+#### 模块的整体输入，module命令
+#### export default 命令
+
+### 模块的继承
+模块之间也可以继承。
