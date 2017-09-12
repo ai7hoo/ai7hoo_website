@@ -1,4 +1,4 @@
-markdown: redcarpet
+markdown: expected
 permalink: /:categories/:title.html
 url: 
 lsi: false
