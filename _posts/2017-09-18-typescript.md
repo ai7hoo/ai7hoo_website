@@ -563,11 +563,420 @@ npm install @types/node --save-dev
 
 ## 进阶
 ### 类型别名
+类型别名用来给一个类型起个新的名字。
+``` ts
+type Name = string;
+type NameResolver = () => string;
+type NameOrResolver = Name | NameResolver;
+function getName(n: NameOrResolver): Name {
+    if (typeof n === 'string') {
+        return n;
+    }
+    else {
+        return n()
+    }
+}
+```
+上面的例子中我们使用type创建类型别名。
+类型别名常用于联合类型。
 ### 字符串字面量类型
+字符串字面量类型用来约束取值只能是某几个字符串中的一个。
+``` ts
+type EventNames = 'click' | 'scroll' | 'mousemove';
+function handleEvent(ele: Element, event: EventNames) {
+    // do some....
+}
+handleEvent(document.getElementById('hello'), 'scroll')
+// 没问题
+handleEvent(document.getElementById('hello'), 'dbclick')
+// 会出错的。
+```
+上例中，我们使用 `type` 定了一个字符串字面量类型 `EventNames`,它只能取三种字符串中的一种。
+注意，***类型别名与字符串字面量类型都是使用type进行定义。
 ### 元组
+数组合并了相同类型的对象，而元组合并了不同类型的对象。
+元组起源于函数编程语言，在这些语言中频繁使用元组
+``` ts
+// 定义一对值分别为 string 和 number 的元组
+let t: [string, number] = ['quinn', 24];
+```
+当赋值或访问一个已知索引的元素时，会得到正确的类型：
+``` ts
+let t: [string, number];
+t[0] = 'quinn'
+t[1] = 24
+```
+越界的元素
+当赋值给越界的元素时，它的类型会被限制为元组中每个类型的联合类型：
+``` ts
+let q: [string, number]
+q = ['quinn', 55, true]
+// 会报错，第三个元素是 boolean 类型，不符合上面的定义的联合类型。
+```
 ### 枚举
+枚举类型用于取值被限定在一定范围内的场景，比如一周只能有七天，颜色限定为红绿蓝等。
+``` ts
+// 枚举使用 enum 关键字定义
+enum Days {Sun, Mon, Tue, Web, Thu, Fri, Sat}
+```
+枚举成员会被赋值为从0开始递增的数字，同事也会对枚举值到枚举名进行反向映射：
+``` ts
+enum Days {Sun, Mon, Tue, Web, Thu, Fri, Sat}
+console.log(Days['Sun'] === 0) // true
+console.log(Days['Mon'] === 1) // true...
+...
+
+console.log(Days[0] === 'Sun') // true
+console.log(Days[1] === 'Mon') // true
+```
+手动赋值
+我们也可以给枚举项目手动赋值：
+```
+enum Days {Sun = 7, Mon = 1, Tue}
+```
 ### 类
+传统方法中，js通过构造函数实现类的概念，通过原型链实现继承。而在ES6中，我们终于迎来了 class。
+ts除了实现了所有的ES6中的类的功能之外，还添加了一些新的用法。
+#### 类的概念
+虽然js中有类的概念，但是可能大多数js程序员并不是很熟悉类，这里对类相关的概念做一个简单的介绍。
+- 类（Class）:定义了一件事物的特点，包含它的属性和方法。
+- 对象（Object）:类的实例，通过new生成
+- 面向对象（OOP）的三大特性:封装、继承、多态
+- 封装（Encapsulation）:将对数据的操作细节隐藏起来，只暴漏对外接口。外界调用端不需要（也不可能）知道细节，就能通过对外提供的接口来访问该对戏那个，同事也保证了外界无法任意更改对象内部的数据。
+- 继承（Inheritance）:子继承父类，子类除了拥有父类的所有特性外，还有一些更具体的特性。
+- 多态（Polymorphism）:由继承而产生的相关的不同的类，对同一个方法可能有不同的响应。比如cat和dog都继承自Animal，但是分别实现了自己的eat方法。此时针对某一个实例，我们无需了解它是cat还是dog，就可以直接调用eat方法，程序会自动判断出来应该如何执行eat。
+- 存取器（getter&setter）:用以改变属性的读取和赋值行为
+- 修饰符（Modifiers）:修饰符是一些关键字，用于限定成员或类型的性质。比如public表示公有属性或方法
+- 抽象类（Abstract Class）:抽象类是供其他类继承的基类，抽象类不允许被实例化。抽象类中的抽象方法必须在子类中被实现
+- 接口（interfaces）:不同类之间公有的属性或方法，可以抽象成一个接口。接口可以被类实现（implements）。一个类只能继承自另一个类，但是可以实现多个接口。
+#### ES6中类的用法
+#### 属性和方法
+使用class定义类，使用constructor定义构造函数。
+通过new生成新实例的时候，会自动调用构造函数。
+``` ts
+class Animal {
+    constructor(name) {
+        this.name = name
+    }
+    sayHi () {
+        return 'My name is ' + this.name
+    }
+}
+let a = new Animal('jack')
+console.log(a.sayHi())  // My name is jack
+```
+#### 类的继承
+使用extends关键字实现继承，子类中使用super关键字来调用父类的构造函数和方法
+``` ts
+class Cat extends Animal {
+    constructor (name) {
+        super(name)
+        console.log(this.name)
+    }
+    sayHi() {
+        return 'Hi, ' + super.sayHi()
+    }
+}
+let c = new Cat('Tom')
+console.log(c.sayHi())  // Hi, My name is Tom
+```
+存取器
+使用getter和setter可以改变属性的赋值和读取行为：
+``` ts
+class Animal {
+    constructor (name) {
+        this.name = name
+    }
+    get name() {
+        return 'Jack'
+    }
+    set name(value) {
+        console.log('setter' + value)
+    }
+}
+let a = new Animal('kitt') // setter:kitt
+a.name = 'tom' // setter: Jack
+console.log(a.name) // jack
+```
+#### 静态方法
+使用`static`修饰符修饰的方法成为静态方法，他们不需要实例化，而是直接通过类来调用：
+```ts
+class Animal {
+    static isAnimal(a) {
+        return a instanceof Animal;
+    }
+}
+let a = new Animal('Jack')
+Animal.isAnimal(a) // true
+a.isAnimal(a)// error
+```
+#### ES7中类的用法
+ES7中有一些关于类的提案，ts也实现了他们，这里简单说一下。
+实例属性
+ES6中实例的属性只能通过构造函数中的this.xxx来定义，ES7提案中可以直接在类里面定义：
+```ts
+class Animal {
+    name = 'jack'
+    constructor() {
+        //...
+    }
+}
+let a = new Animal()
+console.log(a.name)
+```
+静态属性
+ES7提案中，可以使用`static`定义一个静态属性：
+```ts
+class Animal {
+    static num = 42
+    constructor() {
+        //...
+    }
+}
+console.log(Animal.num) // 42
+```
+#### public private 和 protected
+ts中可以使用三种访问修饰符，分别是public,private和protected
+public 修饰符的属性或方法是公有的。可以在任何地方被访问到，默认所有的属性方法都是public的。
+private修饰的属性或方法是私有的，不能在声明它的类的外部方法
+protected修饰的属性或方法是受保护的，它和private类似，区别是它在子类中也是允许被访问的。
+``` ts
+class Animal {
+    public name;
+    public constructor(name) {
+        this.name = name
+    }
+}
+let a = new Animal('Jack')
+console.log(a.name)//Jack
+a.name = 'Tom'
+console.log(a.name)//Tom
+```
+上面的例子中， name被设置为了public，所以直接方位实例的name属性是允许的。
+很多时候，我们希望有的属性是服务直接存取，这时候就可以用private了
+``` ts
+class Animal {
+    private name;
+    public constructor(name) {
+        this.name = name
+    }
+}
+let a = new Animal('Jack')
+console.log(a.name)
+a.name = 'tom'
+// 报错 name 为 private 私有属性
+```
+需要注意的是，ts编译之后的代码中，并没有限制priva属性在外部的可访问性。
+使用private修饰的属性或者方法，在子类中也是不允许访问的：
+```ts
+class Animal {
+    private name;
+    public constructor(name) {
+        this.name = name
+    }
+}
+class Cat extends Animal {
+    constructor(name) {
+        super(name)
+        console.log(this.name)
+    }
+}
+```
+上面的Cat类会报错，private修饰过的不允许子类访问
+而如果是用 protected修饰，则允许在子类中访问：
+```ts
+class Animal {
+    protected name;
+    public contructor(name) {
+        this.name = name
+    }
+}
+class Cat extends Animal {
+    constructor (name) {
+        super(name)
+        console.log(this.name)
+    }
+}
+```
+#### 抽象类
+`abstract`用于定义抽象类和其中的抽象方法。
+什么是抽象类？
+首先，抽象类是不允许被实例化的：
+```ts
+abstract class Animal {
+    public name;
+    constructor(name) {
+        this.name = name
+    }
+    public abstract sayHi()
+}
+let a = new Animal('Jack')
+// 报错的
+```
+上面的例子中，我们定义了一个抽象类animal，并且定义了一个抽象方法sayHi。在实例化抽象类的时候报错了。
+其次，抽象类中的抽象方法必须被子类实现。
+```ts
+abstract class Animal {
+    public name;
+    public constructor(name) {
+        this.name = name
+    }
+    public abstract sayHi()
+}
+class Cat extends Animal {
+    public eat() {
+        console.log(this.name + 'is eating')
+    }
+}
+let cat = new Cat('Tom')
+// 这里会报错
+```
+上面的例子中，我们定义了一个类cat继承了抽象类animal，但是没有实现抽象方法sayHi,所以编译报错。
+下面是一个正确使用抽象类的例子：
+```ts
+abstract class Animal {
+    public name;
+    public constructor(name) {
+        this.name = name
+    }
+    public abstract sayHi()
+}
+class Cat extends Animal {
+    public sayHi() {
+        console.log(this.name + ' say hi')
+    }
+}
+let cat = new Cat('Tom')
+```
+需要注意的是，及时是抽象方法，ts的编译结果中，仍然会存在这个类。
+####类的类型
+给类加上ts的类型很简单，与接口类似：
+```ts
+class Animal {
+    name: string;
+    constructor(name: string) {
+        this.name = name
+    }
+    sayHi(): string {
+        return this.name + ' say hi'
+    }
+}
+```
 ### 类与接口
+上面讲过，接口（interface）可以用于对[对象的形状(Shape)]进行描述。
+这一章主要介绍接口的另一个用途，对类的一部分行为进行抽象。
+#### 类实现接口
+实现是面向对象的一个重要概念，一般来讲，一个类只能继承自另一个类，有时候不同类之间可以有一些公有的特性，这时候就可以把特性提取成接口，用`implements`关键字来实现，这个特性大大提高了面向对象的灵活性。
+举例来说，门是一个类，防盗门是门的子类。如果防盗门有一个报警器，我们可以简单的给防盗门添加一个报警方法。这时候如果有另一个类，车，也有报警器的功能，就可以考虑把报警器提取出来，作为一个接口，防盗门和车都去实现它：
+```ts
+interface Alarm {
+    alert();
+}
+class Door {
+}
+class SecurityDoor extends Door implements Alarm {
+    alert() {
+        console.log('SecurityDoor alert')
+    }
+}
+class Car implements Alarm {
+    alert() {
+        console.log('Car alert')
+    }
+}
+```
+一个类可以实现多个接口
+```ts
+interface Alarm {
+    alert()
+}
+interface Light {
+    lightOn()
+    lightOff()
+}
+class Car implements Alarm, Light {
+    alert() {
+        console.log('Car alert')
+    }
+    lightOn() {
+        console.log('Car light on')
+    }
+    ligthOff() {
+        console.log('Car light off')
+    }
+}
+```
+上例中，Car 实现了Alarm和Light接口，技能报警，也能开关车灯。
+#### 接口继承接口
+接口与接口之间也可以是继承关系：
+```ts
+interface Alarm {
+    alert();
+}
+interface LightableAlarm extends Alarm {
+    lightOn()
+    lightOff()
+}
+```
+上例中，使用extends，使LightableAlarm继承Alarm
+#### 接口结成类
+接口也可以继承类：
+```ts
+class Point {
+    x: number
+    y: number
+}
+interface Point3d extends Point {
+    z: number
+}
+let point3d: Point3d = {
+    x: 1,
+    y: 2,
+    z: 3
+}
+```
+#### 混合类型
+之前学习过，可以使用接口的方式来定义一个函数需要符合的形状：
+```ts
+interface SearchFunc {
+    (source: string, subString: string): boolean
+}
+let mySearch: SearchFunc;
+mySearch = function (source: string, subString: string) {
+    return source.search(subString !== -1)
+}
+```
+有时候，一个函数还可以有自己的属性和方法：
+```ts
+interface Counter {
+    (start: number): string;
+    interval: number;
+    reset(): void;
+}
+function getCounter(): Counter {
+    let counter = <Counter>function (start: number) {};
+    counter.interval = 123;
+    counter.reset = function() {};
+    return counter;
+}
+let c = getCounter();
+c(10)
+c.reset()
+c.interval = 1.0
+```
 ### 泛型
+泛型是指在定义函数、接口或者类的时候，不预先指定具体的类型，而在使用的时候在指定类型的一种特性。
+首先，我们来实现一个函数createArray，它可以创建一个指定长度的数组，同时将每一项都填充一个默认值：
+```ts
+function createArray(length: number, value:any): Array<any> {
+    let result = []
+    for (let i = 0; i < length; i++) {
+        result[i] = value
+    }
+    return result;
+}
+createArray(5, 'hi')
+// ['hi','hi','hi','hi','hi']
+```
 ### 声明合并
 ### 扩展阅读
