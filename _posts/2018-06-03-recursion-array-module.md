@@ -48,7 +48,7 @@ function sortById(list, result) {
   var result = result || []
   // 使用从后往前的方式进行循环，方便使用splice删除元素而不影响循环
   for (let i = list.length - 1; i >= 0; i--) {
-    if (list[i].dep.length < 1 || !list[i].dep) {
+    if (list[i].dep.length < 1) {
       // 如果依赖长度为空，或者依赖没有写dep，则直接添加到结果result里，并使用splice在原数组list中删除
       result.unshift(list[i])
       list.splice(i, 1)
